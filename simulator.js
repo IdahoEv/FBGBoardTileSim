@@ -1,29 +1,75 @@
 var ROWS = 14;
 var COLS = 20;
 var SIZE = 20;
-var STEPS = 400;
 
 var grid = new HexagonGrid("HexCanvas", SIZE);
 var terrains = {
-  mountain: '#663300',  
-  desert: '#FFCC66',
-  lowland: '#33CC33',
-  wetland: '#009999',
-  river: 'blue'
+  mountain: { 
+    color: '#663300',
+    stack: {
+      mountain: 50,
+      desert: 25,
+      lowland: 20,
+      ruins: 10,
+      wetland: 0
+    }
+  }, 
+  desert: {
+    color: '#FFCC66',
+    stack: {
+      mountain: 25,
+      desert: 50,
+      lowland: 10,
+      ruins: 15,
+      wetland: 0
+    }
+  },  
+  lowland: {
+    color: '#33CC33',
+    stack: {
+      mountain: 50,
+      desert: 25,
+      lowland: 50,
+      ruins: 25,
+      wetland: 10
+    }
+  },  
+  wetland: {
+    color: '#009999',
+    stack: {
+      mountain: 50,
+      desert: 25,
+      lowland: 20,
+      ruins: 10,
+      wetland: 10
+    }
+  },
+  ruins: {
+    color: '#555555',
+    stack: {
+      mountain: 5,
+      desert: 5,
+      lowland: 5,
+      ruins: 15,
+      wetland: 0
+    }
+  }
 }
 grid.drawHexGrid(ROWS, COLS, SIZE, SIZE, true);
 
+var tile_stacks = createArray(5,5);
+
 var random_tiles = []
-for(ii = 0; ii < 50; ii++){
+for(ii = 0; ii < 500; ii++){
   random_tiles.push('mountain');
 }
-for(ii = 0; ii < 75; ii++){
+for(ii = 0; ii < 750; ii++){
   random_tiles.push('desert');
 }
-for(ii = 0; ii < 40; ii++){
+for(ii = 0; ii < 400; ii++){
   random_tiles.push('lowland');
 }
-for(ii = 0; ii < 20; ii++){
+for(ii = 0; ii < 200; ii++){
   random_tiles.push('wetland');
 }
 
@@ -51,19 +97,36 @@ var evenColDeltas = [
   [-1,-1]
 ];
 
-// Random-walk the board, inserting a tile wherever there isn't one
-for (ii=0; ii < STEPS; ii++) {
-  console.log(ii, col, row);
-  if (board[col][row] != undefined) {
-  } else {
-    board[col][row] = random_tiles.pop();
-    grid.drawHexAtColRow(col,row,terrains[board[col][row]]);
+
+function randomFill() {
+  var STEPS = 400;
+  board[col][row] = random_tiles.pop();
+  grid.drawHexAtColRow(col,row,terrains[board[col][row]].color);
+  // Random-walk the board, inserting a tile wherever there isn't one
+  for (ii=0; ii < STEPS; ii++) {
+    console.log(ii, col, row);
+
+    if (col % 2 == 0) {
+      var deltas = evenColDeltas;
+    } else {
+      var deltas = oddColDeltas;      
+    }
+    for (jj=0; jj < 6; jj++){
+      del = deltas[jj];
+      var rx = row+del[1];
+      var cx = col+del[0];
+      if (!outOfRange(cx,rx) && (board[cx][rx] == undefined)){
+        board[cx][rx] = random_tiles.pop();
+        grid.drawHexAtColRow(cx,rx,terrains[board[cx][rx]].color);
+      }
+    }
+    new_coords = randomStep(col, row);  
+    col = new_coords[0];
+    row = new_coords[1];
   }
-  new_coords = randomStep(col, row);  
-  col = new_coords[0];
-  row = new_coords[1];
 }
 
+randomFill();
 
 
 function randomStep(start_col, start_row) {
