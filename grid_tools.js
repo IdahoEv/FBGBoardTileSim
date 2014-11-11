@@ -1,7 +1,7 @@
 var GridTools = (function () {
   var my = {},
-    ROWS = 14, 
-    COLS = 20,
+    ROWS = 16, 
+    COLS = 30,
     SIZE = 20,
     grid;
 
@@ -24,6 +24,14 @@ var GridTools = (function () {
 
   my.init = function() {
     grid = new HexagonGrid("HexCanvas", SIZE);    
+    grid.drawHexGrid(ROWS, COLS, SIZE, SIZE, true);
+  }
+
+  my.walkTheBoard = function(whatToDo) {
+    var scol = COLS/2;
+    var srow = ROWS/2;
+    console.log('walking the board starting at ', scol, srow);
+    
   }
 
   function randomStep(start_col, start_row) {

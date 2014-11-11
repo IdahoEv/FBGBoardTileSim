@@ -7,40 +7,40 @@ var TerrainTools = (function () {
     mountain: { 
       color: '#663300',
       stack: {
-        mountain: 50,
-        desert: 25,
-        lowland: 20,
-        ruins: 10,
+        mountain: 20,
+        desert: 10,
+        lowland: 7,
+        ruins: 5,
         wetland: 0
       }
     }, 
     desert: {
       color: '#FFCC66',
       stack: {
-        mountain: 25,
-        desert: 50,
-        lowland: 10,
-        ruins: 15,
+        mountain: 10,
+        desert: 20,
+        lowland: 5,
+        ruins: 7,
         wetland: 0
       }
     },  
     lowland: {
       color: '#33CC33',
       stack: {
-        mountain: 50,
-        desert: 25,
-        lowland: 50,
-        ruins: 25,
-        wetland: 10
+        mountain: 5,
+        desert: 10,
+        lowland: 20,
+        ruins: 5,
+        wetland: 5
       }
     },  
     wetland: {
       color: '#009999',
       stack: {
-        mountain: 50,
-        desert: 25,
-        lowland: 20,
-        ruins: 10,
+        mountain: 5,
+        desert: 0,
+        lowland: 7,
+        ruins: 2,
         wetland: 10
       }
     },
@@ -50,7 +50,7 @@ var TerrainTools = (function () {
         mountain: 5,
         desert: 5,
         lowland: 5,
-        ruins: 15,
+        ruins: 10,
         wetland: 0
       }
     }
@@ -61,6 +61,11 @@ var TerrainTools = (function () {
   }
   my.getStacks = function() {
     return stacks;
+  }
+  my.getCombinedStack = function() {
+    this.buildStacks();
+    //return combineStacks(stacks);
+    return ArrayTools.shuffle(combineStacks(stacks));    
   }
 
   my.buildStacks = function(){
@@ -86,6 +91,14 @@ var TerrainTools = (function () {
     }   
   }
 
+
+  function combineStacks(separateStacks) {
+    var combined = [];
+    my.eachTerrain(function(terrain){
+      combined.push.apply(combined, separateStacks[terrain]);
+    })
+    return combined;
+  }
 
   return my;
 }());

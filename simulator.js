@@ -23,5 +23,12 @@ var Simulator = (function() {
     GridTools.init();
   }
 
+  // tileSelector is a function to that takes two arguments:
+  //   terrain:  the terrain of the current tile
+  //   stack: the source of tiles to pull from
+  my.walkTheBoard = function(tileSelector) {
+
+  }
+
   return my;
 }());
