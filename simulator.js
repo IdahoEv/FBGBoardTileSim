@@ -4,9 +4,20 @@ var Simulator = (function() {
       board;
 
   function bindUX() {
-    
+    $('#random_terrain').click(function(evt) { 
+      evt.preventDefault();
+      my.exploreRandom();
+    });
+    $('#stack_terrain').click(function(evt) { 
+      evt.preventDefault();
+      my.exploreStacked();
+    });
   }
 
+
+  function clear() {
+    board = ArrayTools.createArray(GridTools.getCols(), GridTools.getRows());
+  }
 
   my.populateTableWithDefaults = function(){
     terrain_data = TerrainTools.getTerrainData();
@@ -21,13 +32,83 @@ var Simulator = (function() {
     console.log('initializing simulator');
     my.populateTableWithDefaults();
     GridTools.init();
+    bindUX();
   }
 
-  // tileSelector is a function to that takes two arguments:
-  //   terrain:  the terrain of the current tile
-  //   stack: the source of tiles to pull from
-  my.walkTheBoard = function(tileSelector) {
+ 
+  my.exploreRandom = function() {
+    console.log('explore random');
+    clear();
+    GridTools.init();
+    GridTools.walkTheBoard(
+      TerrainTools.getCombinedStack(),
+      this.setRandomTile,
+      this.tilesAreEmpty     
+    )
+  }
+  my.exploreStacked = function() {
+    console.log('explore stacked');
+    clear();
+    sc = GridTools.getCols()/2;
+    sr = GridTools.getRows()/2;
+    board[sc][sr] = 'desert'; 
+    GridTools.init();
+    GridTools.walkTheBoard(
+      TerrainTools.getStacks(),
+      this.setStackTile,
+      this.stacksAreEmpty     
+    )
+  }
 
+  
+  my.setRandomTile = function(tiles, cx, rx, _col, _row) {
+    if (my.tilesAreEmpty(tiles)) {
+      return;
+    }
+    if (board[cx][rx] == undefined) {
+      board[cx][rx] = tiles.pop(); 
+    }
+    GridTools.drawTerrain(board[cx][rx], cx, rx);
+  }
+  my.setStackTile = function(tiles, cx, rx, col, row) {
+    if (my.stacksAreEmpty(tiles)) {
+      return;
+    }
+    currentTerrain = board[col][row];
+    console.log("Current terrain", currentTerrain, col, row);
+    if (board[cx][rx] == undefined) {
+      if (tiles[currentTerrain].length > 0) {
+        board[cx][rx] = tiles[currentTerrain].pop(currentTerrain); 
+      } else {
+        board[cx][rx] = getTileFromAnyStack(tiles);
+      }
+      GridTools.drawTerrain(board[cx][rx], cx, rx);
+    }
+  }
+
+  function getTileFromAnyStack(tiles) {    
+    stackNames = ArrayTools.shuffle(['mountain', 'lowland', 'desert', 'ruins', 'wetland']);
+    for(ii = 0; ii < stackNames.length; ii++) {
+      if(tiles[stackNames[ii]].length > 0) {
+        return tiles[stackNames[ii]].pop();
+      }
+    }
+  }
+  function tilesInStack(tiles) {
+    tiles['mountain'].length +
+      tiles['lowland'].length +
+      tiles['desert'].length +
+      tiles['ruins'].length +
+      tiles['wetland'].length; 
+  }
+ 
+  my.tilesAreEmpty = function(tiles) {
+    //console.log(tiles.length, "remaining tiles");
+    return (tiles.length < 1);
+  }
+  my.stacksAreEmpty = function(tiles) {
+    //console.log(tilesInStack(tiles), "remaining tiles in stacks");
+    return tilesInStack(tiles) < 1;
   }
 
   return my;
