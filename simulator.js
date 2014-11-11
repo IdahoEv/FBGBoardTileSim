@@ -3,7 +3,8 @@ var COLS = 20;
 var SIZE = 20;
 
 var grid = new HexagonGrid("HexCanvas", SIZE);
-var terrains = {
+//var terrains = ['mountain', 'desert', 'lowland', 'wetland', 'ruins' ];
+var terrain_data = {
   mountain: { 
     color: '#663300',
     stack: {
@@ -57,23 +58,8 @@ var terrains = {
 }
 grid.drawHexGrid(ROWS, COLS, SIZE, SIZE, true);
 
-var tile_stacks = createArray(5,5);
 
-var random_tiles = []
-for(ii = 0; ii < 500; ii++){
-  random_tiles.push('mountain');
-}
-for(ii = 0; ii < 750; ii++){
-  random_tiles.push('desert');
-}
-for(ii = 0; ii < 400; ii++){
-  random_tiles.push('lowland');
-}
-for(ii = 0; ii < 200; ii++){
-  random_tiles.push('wetland');
-}
 
-shuffle(random_tiles);
 
 var row = ROWS/2;
 var col = COLS/2;
@@ -97,11 +83,35 @@ var evenColDeltas = [
   [-1,-1]
 ];
 
+populateTableWithDefaults();
+//randomFill();
+
+function populateTableWithDefaults() {
+  for(var terr in terrain_data) {
+    for(var terr2 in terrain_data[terr]['stack']) {
+      $('[data-stack="'+terr+'"][data-terrain="'+terr2+'"]').val(terrain_data[terr]['stack'][terr2]); 
+    }
+  }
+}
 
 function randomFill() {
+  var random_tiles = []
+  for(ii = 0; ii < 50; ii++){
+    random_tiles.push('mountain');
+  }
+  for(ii = 0; ii < 75; ii++){
+    random_tiles.push('desert');
+  }
+  for(ii = 0; ii < 40; ii++){
+    random_tiles.push('lowland');
+  }
+  for(ii = 0; ii < 20; ii++){
+    random_tiles.push('wetland');
+  }
+  shuffle(random_tiles);
   var STEPS = 400;
   board[col][row] = random_tiles.pop();
-  grid.drawHexAtColRow(col,row,terrains[board[col][row]].color);
+  grid.drawHexAtColRow(col,row,terrain_data[board[col][row]].color);
   // Random-walk the board, inserting a tile wherever there isn't one
   for (ii=0; ii < STEPS; ii++) {
     console.log(ii, col, row);
@@ -117,7 +127,7 @@ function randomFill() {
       var cx = col+del[0];
       if (!outOfRange(cx,rx) && (board[cx][rx] == undefined)){
         board[cx][rx] = random_tiles.pop();
-        grid.drawHexAtColRow(cx,rx,terrains[board[cx][rx]].color);
+        grid.drawHexAtColRow(cx,rx,terrain_data[board[cx][rx]].color);
       }
     }
     new_coords = randomStep(col, row);  
@@ -126,7 +136,6 @@ function randomFill() {
   }
 }
 
-randomFill();
 
 
 function randomStep(start_col, start_row) {
