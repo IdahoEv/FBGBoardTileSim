@@ -5,13 +5,13 @@ var TerrainTools = (function () {
 
   var terrain_data = {
     mountain: { 
-      color: '#663300',
+      color: '#850',
       stack: {
         mountain: 20,
         lowland: 7,
         desert: 10,
-        wetland: 0,
-        ruins: 5,
+        wetland: 2,
+        ruins: 3,
       }
     }, 
     lowland: {
@@ -21,7 +21,7 @@ var TerrainTools = (function () {
         lowland: 20,
         desert: 10,
         wetland: 7,
-        ruins: 5,
+        ruins: 3,
       }
     },  
     desert: {
@@ -31,11 +31,11 @@ var TerrainTools = (function () {
         lowland: 5,
         desert: 20,
         wetland: 0,
-        ruins: 5,
+        ruins: 3,
       }
     },  
     wetland: {
-      color: '#009999',
+      color: '#09a',
       stack: {
         mountain: 5,
         lowland: 7,
@@ -50,7 +50,7 @@ var TerrainTools = (function () {
         mountain: 3,
         lowland: 3,
         desert: 3,
-        wetland: 0,
+        wetland: 2,
         ruins: 5,
       }
     }
@@ -68,8 +68,12 @@ var TerrainTools = (function () {
     return ArrayTools.shuffle(combineStacks(stacks));    
   }
   my.getColor = function(terrainName){
+    if(terrainName == undefined) {
+      return 'white';
+    }
     return terrain_data[terrainName]['color'];
   }
+
 
   my.buildStacks = function(){
     stacks = {};

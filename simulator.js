@@ -12,6 +12,10 @@ var Simulator = (function() {
       evt.preventDefault();
       my.exploreStacked();
     });
+    $('input').change(function(evt){
+      console.log('change triggered');
+      my.computeTotals();
+    })
   }
 
 
@@ -26,6 +30,20 @@ var Simulator = (function() {
         $('[data-stack="'+terr+'"][data-terrain="'+terr2+'"]').val(terrain_data[terr]['stack'][terr2]); 
       }
     }
+    my.computeTotals();
+  }
+
+  my.computeTotals = function() {
+    bigsum = 0;
+    TerrainTools.eachTerrain(function(terr){
+      sum = 0;
+      $('input[data-terrain="'+terr+'"').each(function(idx, elem){      
+        sum = sum + $(elem).val() * 1;
+      });
+      $('td[data-terrain="'+terr+'"').html(sum);
+      bigsum += sum;
+    });
+    $('td[data-total]').html(bigsum);
   }
 
   my.init = function() {

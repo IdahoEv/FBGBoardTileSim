@@ -7,11 +7,28 @@
     <script src='terrain_tools.js'></script>
     <script src='grid_tools.js'></script>
     <script src='simulator.js'></script>
+    <style type='text/css'>
+body {
+  font-family: sans-serif;
+}
+.totals td {
+  text-align: center;
+}
+input {
+  text-align: center;
+}
+td[data-terrain='mountain']{ background: #850 }
+td[data-terrain='lowland'] { background: #3c3 }
+td[data-terrain='desert']  { background: #fc6 }
+td[data-terrain='wetland'] { background: #09a }
+td[data-terrain='ruins']   { background: #666 }
+
+    </style>
 </head>
 <body>
     <form>
-      <button id='random_terrain' value='random_terrain' />Random Terrains</button>
-      <button id='stack_terrain' value='stack_terrain' />Stack-based Terrains</button>
+      <button id='random_terrain' value='random_terrain' />Pick Terrains Randomly</button>
+      <button id='stack_terrain' value='stack_terrain' />Pick Terrains by Stack-based</button>
     <table>
       <tr>
         <th></th>
@@ -61,6 +78,15 @@
         <td><input size='8' data-stack='ruins' data-terrain='wetland' /></td>
         <td><input size='8' data-stack='ruins' data-terrain='ruins' /></td>
       </tr>   
+      <tr class='totals'>
+        <th>Total by terrain:</th>
+        <td data-terrain='mountain' /></td>
+        <td data-terrain='lowland' /></td>
+        <td data-terrain='desert' /></td>
+        <td data-terrain='wetland' /></td>
+        <td data-terrain='ruins' /></td>
+        <td data-total/></td>
+    </tr>   
     </table>
     </form>
     <canvas id="HexCanvas" width="1000" height="700"></canvas>
