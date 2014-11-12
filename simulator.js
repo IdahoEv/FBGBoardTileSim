@@ -53,6 +53,7 @@ var Simulator = (function() {
     sr = GridTools.getRows()/2;
     board[sc][sr] = 'desert'; 
     GridTools.init();
+    GridTools.drawTerrain(board[sc][sr], sc, sr);
     GridTools.walkTheBoard(
       TerrainTools.getStacks(),
       this.setStackTile,
